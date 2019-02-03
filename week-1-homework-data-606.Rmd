@@ -1,0 +1,187 @@
+---
+title: "Week 1 Homework - Data606"
+author: "Michael Hayes"
+date: "January 29, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##1.8
+Smoking habits of UK residents.
+A survey was conducted to study the smoking habits of UK residents. Below is a data matrix displaying a portion of the data collected in this survey. Note that ???????? stands for British Pounds Sterling, ???cig??? stands for cigarettes, and ???N/A??? refers to a missing component of the data.
+
+(a) What does each row of the data matrix represent?
+
+Each row represents an observation, in this case a resident of the UK that participated in the survey.
+
+
+(b)How many participants were included in the survey?
+
+The data matrix include 1691 observations, which means there were 1691 participants in the survey.
+
+
+(c)Indicate whether each variable in the study is numerical or categorical. If numerical, identify
+as continuous or discrete. If categorical, indicate if the variable is ordinal
+
+"sex" is categorical and nominal.
+"age" is numerical and discrete.
+"marital" is categorical and nominal.
+"grossIncome" is categorical and ordinal.
+"smoke" is categorical and nominal.
+"amtWeekends" is categorical and ordinal.
+"amtWeekdays" is categorical and ordinal.
+
+##1.10
+Cheaters, scope of inference.
+Exercise 1.5 introduces a study where researchers studying the relationship between honesty, age, and self-control conducted an experiment on 160 children between the ages of 5 and 15. The researchers asked each child to toss a fair coin in private and to record the outcome (white or black) on a paper sheet, and said they would only reward children who report white. Half the students were explicitly told not to cheat and the others were not given any explicit instructions. Differences were observed in the cheating rates in the instruction and no instruction groups, as well as some differences across children???s characteristics within each group.
+
+(a) Identify the population of interest and the sample in this study.
+
+The population of interest is children aged 5 to 15.  The sample is 160 children aged 5 to 15.
+
+(b) Comment on whether or not the results of the study can be generalized to the population, and
+if the findings of the study can be used to establish causal relationships
+
+The results can be generalized if the sample was selected randomly.  Being a controlled experiment, as opposed to an observational survey, the study can be used to establish a causal relationship.
+
+#1.28
+
+(a)An article titled Risks: Smokers Found More Prone to Dementia states the following: ???Researchers analyzed data from 23,123 health plan members who participated in a voluntary exam and health behavior survey from 1978 to 1985, when they were 50-60 years old. 23 years later, about 25% of the group had dementia, including 1,136 with Alzheimer???s disease and 416 with vascular dementia. After adjusting for other factors, the researchers concluded that pack-a-day smokers were 37% more likely than nonsmokers to develop dementia, and the risks went up with increased smoking; 44% for one to two packs a day; and twice the risk for more than two packs.??? Based on this study, can we conclude that smoking causes dementia later in life? Explain your reasoning.
+
+  Because of the observational nature of the survey, we cannot establish causality.  There does seem to be a strong correlation between smoking and dementia, however.
+
+(b) Another article titled The School Bully Is Sleepy states the following: ???The University of Michigan study, collected survey data from parents on each child???s sleep habits and asked both parents and teachers to assess behavioral concerns. About a third of the students studied were identified by parents or teachers as having problems with disruptive behavior or bullying.  The researchers found that children who had behavioral issues and those who were identified as bullies were twice as likely to have shown symptoms of sleep disorders.???
+
+A friend of yours who read the article says, ???The study shows that sleep disorders lead to bullying in school children.??? Is this statement justified? If not, how best can you describe the conclusion that can be drawn from this study?
+
+  The particular statement is not justified.  The study shows an association between behavioral problems   and sleep disorders, but it doesn't imply causality.  There could be other factors not included in the survey that are leading to the bullying behavior.
+  
+  
+##1.36
+
+A researcher is interested in the effects of exercise on mental health and he proposes the following study: Use stratified random sampling to ensure representative proportions of 18-30, 31-40 and 41- 55 year olds from the population. Next, randomly assign half the subjects from each age group to exercise twice a week, and instruct the rest not to exercise. Conduct a mental health exam at the beginning and at the end of the study, and compare the results.
+
+(a) What type of study is this?
+
+This is an experiment.
+
+(b) What are the treatment and control groups in this study?
+
+The treatment group is the part of the sample that is instructed to exercise (one half of the sample from each stratified group).  
+
+The control group is the part of the sample that is instructed not to exercise (the other half of the sample from each stratified group)
+
+(c) Does this study make use of blocking? If so, what is the blocking variable?
+
+It does not appear that the study makes use of blocking, no additional variables are used to separate the sample.
+
+(d) Does this study make use of blinding?
+
+Not apparently.  Since participants are instructed either to exercise or not to exercise, they likely know what group they are part of (i.e. no "placebo").
+
+(e) Comment on whether or not the results of the study can be used to establish a causal relationship between exercise and mental health, and indicate whether or not the conclusions can be generalized to the population at large.
+
+Yes, given the controlled nature of the experiment it can be used to establish causality.  If the sample is randomly chose, it can be used to generalize to the overall population.
+
+(f) Suppose you are given the task of determining if this proposed study should get funding. Would you have any reservations about the study proposal?
+
+I would not.  The structure and approach of the study seems adequate.
+
+
+##1.48
+57, 66, 69, 71, 72, 73, 74, 77, 78, 78, 79, 79, 81, 81, 82, 83, 83, 88, 89, 94
+
+Create a box plot of the distribution of these scores.
+
+```{r}
+boxplot(c(57, 66, 69, 71, 72, 73, 74, 77, 78, 78, 79, 79, 81, 81, 82, 83, 83, 88, 89))
+
+
+```
+
+
+##1.50
+
+```{r}
+knitr::include_graphics("C:/Users/mike/Documents/R/win-library/3.5/DATA606/labs/Lab1/question1.50.PNG")
+
+
+```
+
+Histogram (a) corresponds to boxplot (2).  This is a symmetrical distribution.
+
+Histogram (b) corresponds to boxplot (3).  This is a uniform distribution.
+
+Histogram (c) corresponds to boxplot (1).  This is a right-skewed distribution.
+
+
+##1.56
+
+For each of the following, state whether you expect the distribution to be symmetric, right skewed, or left skewed. Also specify whether the mean or median would best represent a typical observation in the data, and whether the variability of observations would be best represented using the standard deviation or IQR. Explain your reasoning.
+
+(a) Housing prices in a country where 25% of the houses cost below \$350,000, 50% of the houses cost below $450,000, 75% of the houses cost below \$1,000,000 and there are a meaningful number of houses that cost more than \$6,000,000.
+
+This would be a right skewed distribution, but the higher prices houses making up a long right tail.
+Due to the skew, the median would be a better representation of central tendency, as the long right tail would skew the mean in that direction.
+
+Similarly, the IQR would be a better representation of spread, as the standard deviation uses mean, and would hence be similarly skewed towards higher measurements.
+
+(b)Housing prices in a country where 25% of the houses cost below \$300,000, 50% of the housescost below$600,000, 75% of the houses cost below \$900,000 and very few houses that cost more than \$1,200,000.
+
+This would be a symmetric distribution, with roughly equal amounts of observations on either side of the median/50th percentile, and very few outlier observations.
+
+Since there aren't outlier measurements to throw off the measurements of mean, this would be best to represent a typical observation.
+
+Similarly, standard deviation can be used in place of IQR as a measure of spread.  
+
+(c) Number of alcoholic drinks consumed by college students in a given week. Assume that most of these students don???t drink since they are under 21 years old, and only a few drink excessively.
+
+This would be a right skewed histogram, with the bulk of the observations taking up the left of the chart (very few drinks), but some number taking up the far right of the chart (many drinks).
+
+Because of this mean would not be a good measurement of central tendency, as the higher measurements will skew the mean.
+
+IQR would similarly be a better measurement of spread, as the outliers will throw off the standard deviation measurement.
+
+
+(d) Annual salaries of the employees at a Fortune 500 company where only a few high level executives earn much higher salaries than the all other employee
+
+
+This would be right skewed as well.  We would probably see very few employees making very little, the majority making a middling amount, and very few making much higher salaries.
+
+Median would be the better measure of central tendency, as the executive salaries throw off the mean.
+
+IQR would be a better measure of spread, as standard deviation uses mean and would be similarly skewed towards higher values.
+
+##1.70
+
+The Stanford University Heart Transplant Study was conducted to determine whether an experimental heart transplant program increased lifespan.  Each patient entering the program was designated an o official heart transplant candidate, meaning that he was gravely ill and would most likely benefit from a new heart. Some patients got a transplant and some did not. The variable transplant indicates which group the patients were in; patients in the treatment group got a transplant and those in the control group did not. Another variable called survived was used to indicate whether or not the patient was alive at the end of the study.
+
+```{r}
+library(openintro); data(heartTr)
+mosaicplot(table(heartTr$transplant,heartTr$survived))
+boxplot(heartTr$survtime ~ heartTr$transplant, ylab = "Survival Time (Days)")
+```
+
+(a) Based on the mosaic plot, is survival independent of whether or not the patient got a transplant? Explain your reasoning
+
+It does not appear to be independent, as many more observations of survival come from the transplant group.
+
+(b) What do the box plots below suggest about the efficacy (effectiveness) of the heart transplant treatment.
+
+The box plots suggest that heart transplants are very effective at extending the life of a patient.
+
+(c) What proportion of patients in the treatment group and what proportion of patients in the
+control group died?
+
+
+```{r}
+table(heartTr$survived, heartTr$transplant)
+
+30/34 #Proportion of control group that died.
+
+45/69 #Proportion of treatment group that died.
+```
+
