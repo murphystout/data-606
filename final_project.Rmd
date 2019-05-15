@@ -1,0 +1,296 @@
+---
+title: "DATA 606 Final Project"
+author: "Michael Hayes"
+date: "May 6, 2019"
+output:
+  rmdformats::readthedown:
+    code_folding: hide
+    gallery: no
+    highlight: tango
+    lightbox: yes
+    self_contained: yes
+    thumbnails: yes
+  html_document:
+    code_folding: hide
+    df_print: paged
+---
+
+<style type="text/css">
+pre {
+  max-height: 150px;
+  float: left;
+  width: 100%;
+  overflow-y: auto;
+}
+pre.r {
+max-height: none;
+}
+h1.title {
+  color: DarkBlue;
+  font-weight: bold;
+}
+h1 { /* Header 1 */
+  color: DarkBlue;
+  font-weight: bold;
+}
+h2 { /* Header 2 */
+  color: DarkBlue;
+  font-weight: bold;
+}
+h3 { /* Header 3 */
+  color: DarkBlue;
+  font-weight: bold;
+}
+h4 { /* Header 3 */
+  color: DarkBlue;
+  font-weight: bold;
+}
+</style>  
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+install.packages("caret", repos = "http://cran.rstudio.org")
+install.packages("tm", repos = "http://cran.rstudio.org")
+install.packages("jsonlite", repos = "http://cranrstudio.org")
+install.packages("httr", repos = "http://cranrstudio.org")
+
+library(caret)
+library(tm)
+library(jsonlite)
+library(httr)
+
+
+```
+
+
+Michael Hayes
+CUNY SPS
+Spring 2019
+
+#Introduction
+
+In the field of Search Engine Optimization (SEO), there is significant effort put into the evaluation of domain names for tactical and strategic purposes.  
+
+Much of this effort rests in the evaluation of so-called "auction domains", which are generally abandoned from a previous owner, but still retaining "SEO Value" via its histry, external links from other websites, and previous topic/subject matter.
+
+These "auction domains" undergo analysis and evaluation by prospective buyers, using heuristic notions and manual judgments based on the experience and expertise of the human evaluator.
+
+We are going to test some of those heuristic notions to see if the data provides confirmation.  Additionally we are going to train regression models to attempt an automated approach at classification, that can cut down on some of the manual labor needed for domain evaluations.
+
+##The Hueristics 
+
+The main heuristic notions we will be testing are:
+
+ - A difference in the Whois registration date and the Archive.org history data is indicative of "spammy" domain misuse.
+ 
+ - Distance archive.org date indicates domain de-indexation
+ 
+ (i.e. "Indexation" is whether google includes a domain in their 'index', of the web.  Lack of indexation can be indicative of a penalty, or simply because a domain was not available for Google or users for a prolonged period of time).
+ 
+ 
+## Spammy Anchor Text - Predictive Machine Learning Model
+
+One of the key aspects of domain name evaluation is manaully evaluating anchor text (i.e. the text of the links points to the site from other sites on the web).  
+
+In a domain that has been used for spam, we will often see "spammy" anchor texts.  While these can vary, some examples are prescription drug names, sneakers brands, or simply highly competitive search terms that wouldn't appear naturally.
+
+Instead of relying on laborious manual review to determine whether a domain has "spammy" anchor texts, we can train a machine learning model to do the detection for us.
+
+#The Data
+
+Data collection: The data in these examples are all related to domain names.  The domains were initially collected via RegisterCompass.com, which is a paid service that aggregated domain auctions and pulls in relevant data points.  This data is then supplemented when necessary (such as with manual classification).
+
+Cases: The case/observational units in all these examples are domain names.
+
+
+Variables: The variables we will be analyzing include domain name "age" (via Whois records and via archive.org snap shots), domain name "indexation" (i.e. whether google allows the domain in their index of the web), and domain name "anchor texts" (i.e. the text used to link to the domain from 3rd party websites).
+  
+Type of study: This is an observational study.
+    
+    
+Scope of inference - generalizability: The population of interest in these cases are so-called "SEO Domains", i.e. those that might be of interested to practicioners of tactical SEO.  They used some basic filters on various SEO metrics to get a representative sample of domains that might be evaluted by SEOs:
+
+  Moz.com Domain Authorty > 20
+  
+  Majestic.com IP Addresses > 100
+  
+  Majestic.com Citation Flow > 10
+  
+  Majestic.com Trust Flow > 10
+
+
+I believe these inferences can be generalized to domains with similar metrics, but perhaps not to every domain.
+    
+Scope of inference - causality: Since this is an observational study and not an experiment, we can not attribute causality, but only provide correlational association.
+
+
+# Domain Name Analysis
+
+## Domain Misuse
+
+Research Question: Are data like the difference between the Whois (domain registration) date and the Archive.org dat (date the website went live), as well as the indexation of the domain in Google.com, associated with domain misuse?
+
+###Who cares, and why?
+
+Domain evaluators will often use a hueristic notion that a gap in Whois + Archive dates is indicative of a spammy misuse.  The notion being that if a domain was "dropped" and re-registered, it was probably done so by someone with nefarious purposes.
+
+Similarly, evaluators will often not even evaluate domains that aren't indexed, the rule of thumb being that if a domain isn't allowed in the index, its likely got a negative history.
+
+### Linear Regression
+
+To test these hueristics, we manually evaluated 100 domains to determine if it had been previously misused.  We also pulled whether these domains were indexed in Google.
+
+We started with a multiple regression model using both our data points as potential predictors of domain misuse:
+
+
+```{r}
+domain_misuse <- read.csv("https://raw.githubusercontent.com/murphystout/data-606/master/domain_misuse.csv")
+
+model <- lm(domain_misuse ~ whois_arch_diff + google_indexed, data = domain_misuse)
+
+summary(model)
+
+```
+
+
+###Results
+
+As we can see in the summary, the p-value of whois_arch_diff is quite high, so let's remove that and see how it affects the model:
+
+```{r}
+
+model <- lm(domain_misuse ~ google_indexed, data = domain_misuse)
+
+summary(model)
+
+```
+
+Looks like our p-value is similar and still under 0.05.
+
+However, our R-Squared is still quite small (~0.06).  This means only a small portion of the variability in our target variable can be explained by our predictor variable.  
+
+What this means?
+
+ - This data seems to suggest that domain indexation is not associated with historical domain misuse.  Domain evaluators should consider including de-indexed domains in their evaluations, or risk losing some valuable finds that other evaluators might be missing as well.
+ 
+ 
+## Indexation
+
+Is having a distant archive.org last seen date a strong predictor of google de-indexation?
+
+###Who cares and why?
+
+In the view of Domain evaluators, Google de-indexation can happen for essentially two main reasons - Either the domain is removed manually because of a spam penalty, or it simply wasn't "live" or hosting content for a prolonged period of time.
+
+This will look at that last assumption and see if the data supports it.  By leverage archive.org's "Way Back Machine", which hosts snapshots of the internet over the last 20+ years, we can see when the last time the domain hosted content.
+
+Let's see if the length of years since content was last seen is associated with domain de-indexation.  The presumption being that a lengthy time will be more likely to lead to a de-indexation.
+
+###The Data
+
+For this data we use a sample of 100 domains, along with their Google.com indexation status.  We will leverage the Archive.org API to pull snapshot dates, and leverage binary logistic regression to test whether the distance of that snapshot is associated with de-indexation.
+
+```{r}
+
+##Load the Data (domains and indexation) from CSV
+domain_indexation <- read.csv("https://raw.githubusercontent.com/murphystout/data-606/master/domain_indexation.csv")
+
+
+##Iterate through the domains and make a GET pull via archive.org's CDX API.  Pull timestamp.
+
+timestamps <- vector()
+
+for(i in domain_indexation$domain){
+  response <- GET(url = "http://web.archive.org", path = "/cdx/search/cdx" , query = list("url" = i, "output" = "json", "limit" = "1" ,"fastLatest"="true"))
+  t <- try(content(response)[[2]][[2]], silent = TRUE)
+  if("try-error" %in% class(t)){
+    timestamps <- c(timestamps,NA)
+  }else{
+    timestamps <- c(timestamps,content(response)[[2]][[2]])
+  }
+}
+
+##Pull substring from timestamp and substract from current year:
+
+year <- substr(timestamps,1,4)
+years_ago <- 2019 - as.integer(year)
+
+##Create dataframe and run GLM:
+
+df <- data.frame(domain_indexation$domain, domain_indexation$google_indexed,timestamps,year,years_ago)
+
+model <- glm(as.numeric(!as.logical(df$domain_indexation.google_indexed)) ~ df$years_ago)
+
+summary(model)
+```
+
+
+### The Results
+
+As we can see from the summary, the t-value is extremely high, meaning that there is virtually no difference between a simple chance association between the predictor and target variable.  
+
+This can serve to dissuade domain evaluators from using the heuristic notion that de-indexation can be attributed to a distance archive.org date.
+
+## Spammy Anchor Text
+
+The of the biggest aspects of domain evaluation is the evaluation of "external links" (referred to as "backward links" or simply "backlinks").  These are links from 3rd party websites that point to the domain.
+
+Because it is a strong SEO signal (domains with large numbers of natural backlinks tend to rank better), it is often abused and misused by domain owners, so checking for unnatural (or spammy) links is a key aspect of domain evaluation.
+
+It's also extremely manual and tedious, so training an automated model to detect this type of spam would be very useful.
+
+###The Data
+
+For this data we used 100 domains and manually review them to determine if they had "spammy" anchor texts.  
+We then pulled the anchor/link texts via the Ahrefs.com API (this was done externally and loaded to Github as a CSV).
+
+These anchors were then dropped into a Corpus and Document Term Matrix, and fed into a Random Forest model for training:
+
+```{r}
+
+##Load Anchors via CSV.
+
+anchors <- read.csv("https://raw.githubusercontent.com/murphystout/data-606/master/anchor_corpora.csv")
+
+##Create corpus and pull meta data (i.e. classifier data, spam vs. non-spam)
+
+a_corp <- Corpus(DataframeSource(anchors))
+
+meta_data <- meta(a_corp)
+
+##Create Document Term Matrix and traing Random Forest Model:
+
+dtm <- DocumentTermMatrix(a_corp)
+
+randomforest10 = train(x = as.matrix(dtm),
+                             y = factor(meta_data$spam),
+                             method = "rf",
+                             ntree = 10,
+                             trControl = trainControl(method = "boot", number = 10))
+
+randomforest10
+
+```
+
+###The Results
+
+As we can see fro the breakdown, there is something like an 83% accuracy rate with this model.  
+
+While it could potentially be better (especially with more data), this can save a significant amount of effort during domain evaluations.  
+
+#Conclusions
+
+We have found  evidence that some common heuristics used by SEOs in domain evaluation may not be supported by data, and should perhaps be rethought or evaluated further.  These findings are:
+
+Distance archive.org data is *not* necessarily associated with domain de-indexation, SEO's should consider moving away from using this in their domain indexations.
+
+Domain indexation is *not* necessarily associated with a spammy domain history.  This goes against the common rule of thumb used by SEOs.
+
+Finally, machine learning with random forest models could be a very useful tool for performing automated domain name evaluation.
+
+##Suggestions for Future Research
+
+Obviously, more data can be very useful in providing further insights, especially with regard to the machine learning training.  It would be helpful to expand the samples used in these studies to have hundreds or even thousands of domains.
+
